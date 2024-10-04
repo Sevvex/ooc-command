@@ -2,11 +2,7 @@ local lastOOCMessage = nil
 local oocCooldown = 5
 local lastOOCTime = 0
 
-function sendMessageToNearbyPlayers(player, message)
-    print("Message to nearby players: " .. message)
-end
-
-function onCommandReceived(player, command, ...)
+function onCommandReceived(command, ...)
     if command == "/ooc" then
         local message = table.concat({...}, " ")
         local currentTime = os.time()
@@ -18,6 +14,12 @@ function onCommandReceived(player, command, ...)
         lastOOCMessage = message
         lastOOCTime = currentTime
         
-        sendMessageToNearbyPlayers(player, message)
+
+        TriggerServerEvent('ooc:sendMessage', message)
     end
 end
+
+
+RegisterCommand('ooc', function(source, args)
+    onCommandReceived('/ooc', unpack(args))
+end, false)
